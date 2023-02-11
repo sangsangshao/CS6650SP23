@@ -3,12 +3,17 @@ package org.neu.cs6650;
 import io.swagger.client.ApiClient;
 import io.swagger.client.ApiException;
 import io.swagger.client.ApiResponse;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import io.swagger.client.model.SwipeDetails;
@@ -19,14 +24,13 @@ public class MultithreadedClient {
 
   final static private int NUMTHREADS = 50;
 //  final static String LOCALBASEPATH = "http://localhost:8080/twinder";
-  final static String EC2PATH = "http://54.185.47.204:8080/twinder_server-0.0.1-SNAPSHOT/twinder";
+  final static String EC2PATH = "http://54.185.43.194:8080/twinder_server-0.0.1-SNAPSHOT/twinder";
 
   final static private int TOTALREQUESTS = 500000;
   final static private int ROUNDS = TOTALREQUESTS / NUMTHREADS;
 //  private int count = 0;
   private static CopyOnWriteArrayList<Long> latencies = new CopyOnWriteArrayList<>();
   private static CopyOnWriteArrayList<String> lines = new CopyOnWriteArrayList<>();
-  private static ApiClient apiClient = new ApiClient();
 
 //  synchronized public void inc() {
 //    count++;
@@ -84,7 +88,7 @@ public class MultithreadedClient {
                 if (response.getStatusCode() == 201) {
                   long endLatencies = System.currentTimeMillis();
                   newLatency.add(endLatencies - startLatencies);
-                  String line = startLatencies + ", POST, " + (endLatencies - startLatencies) + ", " + response.getStatusCode() + System.lineSeparator();
+                  String line = endLatencies + ", POST, " + (endLatencies - startLatencies) + ", " + response.getStatusCode() + System.lineSeparator();
                   newline.add(line);
 //                  counter.inc();
                   count.getAndIncrement();
@@ -112,7 +116,7 @@ public class MultithreadedClient {
     System.out.println("The total run time for all threads to complete is: " + wallTime + "ms. (" + (double)wallTime / 1000 + "s.)");
 //    System.out.println("Value should be equal to 500K (500000)" + " It is: " + multithreadedClient.getVal());
     System.out.println("Value should be equal to " + TOTALREQUESTS + " It is: " + count.get());
-    System.out.println("The total throughput in requests pre second(total number of request / wall time): " + ((double)count.get() * 1000 / wallTime));
+    System.out.println("The total throughput in requests per second(total number of request / wall time): " + ((double)count.get() * 1000 / wallTime));
 
     System.out.println("Mean response time(ms): " + String.format("%.2f", getMean()));
     System.out.println("Median response time(ms): " + getMedian());
@@ -120,7 +124,7 @@ public class MultithreadedClient {
     System.out.println("p99 response time(ms): " + getP99());
     System.out.println("Minimum response time(ms): " + getMinimum());
     System.out.println("Maximum response time(ms): " + getMaximum());
-    System.out.println("Little Law throughput in theory:" + NUMTHREADS / getMean() * 1000);
+    System.out.println("When the number of thread: " + NUMTHREADS + ", Little Law throughput in theory:" + NUMTHREADS / getMean() * 1000);
 
     writeToCSV();
   }
@@ -169,4 +173,4 @@ public class MultithreadedClient {
       e.printStackTrace();
     }
   }
-}
+  }

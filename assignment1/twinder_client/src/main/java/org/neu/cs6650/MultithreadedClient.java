@@ -11,20 +11,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MultithreadedClient {
 
   final static private int NUMTHREADS = 50;
-  final static String LOCALBASEPATH = "http://localhost:8080/twinder";
-//  final static String EC2PATH = "http://54.244.24.203:8080/twinder_server-0.0.1-SNAPSHOT/twinder";
+//  final static String LOCALBASEPATH = "http://localhost:8080/twinder";
+  final static String EC2PATH = "http://54.185.43.194:8080/twinder_server-0.0.1-SNAPSHOT/twinder";
 
   final static private int TOTALREQUESTS = 500000;
   final static private int ROUNDS = TOTALREQUESTS / NUMTHREADS;
-  private int count = 0;
-
-  synchronized public void inc() {
-    count++;
-  }
-
-  public int getVal() {
-    return this.count;
-  }
+//  private int count = 0;
+//
+//  synchronized public void inc() {
+//    count++;
+//  }
+//
+//  public int getVal() {
+//    return this.count;
+//  }
 
   public static void main(String[] args) throws InterruptedException {
 //    final MultithreadedClient counter = new MultithreadedClient();
@@ -33,8 +33,8 @@ public class MultithreadedClient {
     RandomSwipeDetail randomSwipeDetail = new RandomSwipeDetail();
 
     ApiClient apiClient = new ApiClient();
-    apiClient.setBasePath(LOCALBASEPATH);
-//    apiClient.setBasePath(EC2PATH);
+//    apiClient.setBasePath(LOCALBASEPATH);
+    apiClient.setBasePath(EC2PATH);
     SwipeApi apiInstance = new SwipeApi();
     apiInstance.setApiClient(apiClient);
 
@@ -52,12 +52,10 @@ public class MultithreadedClient {
           }
           try {
 //            System.out.println("Running on Thread: " + Thread.currentThread().getName());
-            // starttime
             ApiResponse<Void> response = apiInstance.swipeWithHttpInfo(swipeDetails, leftOrRight);
             //201: Done, and created. count
 
             if (response.getStatusCode() == 201) {
-              //TODO: THREADSAFE INT
 //              counter.inc();
               count.getAndIncrement();
             } else {
@@ -71,7 +69,6 @@ public class MultithreadedClient {
                 }
               }
             }
-            //endtime
           } catch (ApiException e) {
             System.err.println("Exception when calling SwipeApi#swipe");
             e.printStackTrace();
@@ -89,10 +86,9 @@ public class MultithreadedClient {
     System.out.println("Number of successful requests sent: " + count.get());
 //    System.out.println("Number of successful requests sent: " + statistics.getSuccess());
     System.out.println("Number of unsuccessful requests: " + (TOTALREQUESTS - count.get()));
-    //todo: double type
     System.out.println("The total run time for all threads to complete is: " + wallTime + "ms. (" + (double)wallTime / 1000 + "s.)");
 //    System.out.println("Value should be equal to 500K (500000)" + " It is: " + multithreadedClient.getVal());
     System.out.println("Value should be equal to " + TOTALREQUESTS + " It is: " + count.get());
-    System.out.println("The total throughput in requests pre second(total number of request / wall time): " + ((double)count.get() * 1000 / wallTime));
+    System.out.println("The total throughput in requests per second(total number of request / wall time): " + ((double)count.get() * 1000 / wallTime));
   }
 }

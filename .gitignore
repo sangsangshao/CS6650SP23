@@ -3,3 +3,8 @@ homework1/
 java-client-generated/
 sangsang-keypair.pem
 assignment1/recordFile.csv
+assignment1/chartData.csv
+assignment1/twinder_client_part2/src/main/java/org/neu/cs6650/WriteToCSV.java
+*.class
+.idea/
+*/target/*
