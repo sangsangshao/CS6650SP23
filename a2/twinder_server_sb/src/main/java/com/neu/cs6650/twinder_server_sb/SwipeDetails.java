@@ -1,0 +1,26 @@
+package com.neu.cs6650.twinder_server_sb;
+
+public class SwipeDetails {
+    private String swiper;
+    private String swipee;
+    private String comment;
+
+    public SwipeDetails(String swiper, String swipee, String comment) {
+        this.swiper = swiper;
+        this.swipee = swipee;
+        this.comment = comment;
+    }
+
+    public String getSwiper() {
+        return swiper;
+    }
+
+    public String getSwipee() {
+        return swipee;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+}
